@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DuckDB CRUD Operations</title>
+    <script>
+        async function sendData(url = '', data = {}) {
+            const response = await fetch(url, {
+                method: 'POST',
+                mode: 'cors',
+                cache: 'no-cache',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                redirect: 'follow',
+                referrerPolicy: 'no-referrer',
+                body: JSON.stringify(data)
+            });
+            return response.json();
+        }
+
+        function insertUser() {
+            const id = parseInt(document.getElementById('insert-id').value,10);
+            const name = document.getElementById('insert-name').value;
+            const email = document.getElementById('insert-email').value;
+            sendData('/insert', { id, name, email })
+                .then(data => {
+                    console.log(data);
+                    console.log({id,name,email});
+                    alert(data.message);
+                });
+        }
+
+        function updateUser() {
+            const id = parseInt(document.getElementById('update-id').value,10);
+            const name = document.getElementById('update-name').value;
+            const email = document.getElementById('update-email').value;
+            sendData('/update', { id, name, email })
+                .then(data => {
+                    console.log(data);
+                    alert(data.message);
+                });
+        }
+
+        function deleteUser() {
+            const id = parseInt(document.getElementById('delete-id').value,10);
+            sendData('/delete', id )
+                .then(data => {
+                    console.log(data);
+                    alert(data.message);
+                });
+        }
+
+        function getUser() {
+        const id = parseInt(document.getElementById('get-user-id').value, 10);
+        fetch(`/user/${id}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (!data.message) {
+                    // Do something with the user data
+                    alert(`User Found: ID: ${data.id}, Name: ${data.name}, Email: ${data.email}`);
+                } else {
+                    alert(data.message);
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>DuckDB CRUD Operations</h1>
+
+    <h2>Insert User</h2>
+    <input type="number" id="insert-id" placeholder="User ID" required />
+    <input type="text" id="insert-name" placeholder="Name" required />
+    <input type="email" id="insert-email" placeholder="Email" required />
+    <button onclick="insertUser()">Insert User</button>
+    <!--
+    <h2>Update User</h2>
+    <input type="number" id="update-id" placeholder="User ID" required />
+    <input type="text" id="update-name" placeholder="New Name" />
+    <input type="email" id="update-email" placeholder="New Email" />
+    <button onclick="updateUser()">Update User</button>
+
+    -->
+
+    <h2>Delete User</h2>
+    <input type="number" id="delete-id" placeholder="User ID" required />
+    <button onclick="deleteUser()">Delete User</button>
+
+    <h2>Get User</h2>
+    <input type="number" id="get-user-id" placeholder="User ID" required />
+    <button onclick="getUser()">Get User</button>
+</body>
+</html>
