@@ -46,28 +46,47 @@ fn setup_database(conn: &Connection) -> Result<()> {
     Ok(())
 }
 
-// CRUD operations
+//CRUD operations
 #[post("/insert", format = "json", data = "<user>")]
 fn insert_user(conn: &State<DbConn>, user: Json<User>) -> Json<ApiResponse> {
-    let query = "INSERT INTO users1 (id, name, email) VALUES (?1, ?2, ?3)";
+    let mut connection = conn.0.lock().expect("db connection lock");
 
-    // Scope the lock to ensure it is released as soon as the operation is done
-    let result = {
-        let connection = conn.0.lock().expect("db connection lock");
-        connection.execute(query, params![user.id, user.name, user.email])
+    let transaction = match connection.transaction() {
+        Ok(tx) => tx,
+        Err(e) => return Json(ApiResponse {
+            status: "error".to_string(),
+            message: format!("Failed to start transaction: {}", e),
+        }),
     };
 
-    match result {
-        Ok(_) => Json(ApiResponse {
-            status: "success".to_string(),
-            message: "User inserted successfully".to_string(),
-        }),
-        Err(e) => Json(ApiResponse {
-            status: "error".to_string(),
-            message: format!("Failed to insert user: {}", e),
-        }),
+    let query = "INSERT INTO users1 (id, name, email) VALUES (?1, ?2, ?3)";
+    match transaction.execute(query, params![user.id, user.name, user.email]) {
+        Ok(_) => {
+            transaction.commit().expect("Failed to commit transaction");
+            Json(ApiResponse {
+                status: "success".to_string(),
+                message: "User inserted successfully".to_string(),
+            })
+        },
+        Err(e) => {
+            transaction.rollback().expect("Failed to rollback transaction");
+            // Specific handling for unique constraint violation
+            if e.to_string().contains("UNIQUE constraint failed") {
+                Json(ApiResponse {
+                    status: "error".to_string(),
+                    message: "User already exists".to_string(),
+                })
+            } else {
+                Json(ApiResponse {
+                    status: "error".to_string(),
+                    message: format!("Failed to insert user: {}", e),
+                })
+            }
+        },
     }
 }
+
+
 
 
 #[post("/update", format = "json", data = "<user>")]

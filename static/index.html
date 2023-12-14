@@ -2,7 +2,96 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>DuckDB CRUD Operations</title>
+    <title>RUST - DuckDB - CRUD - Project</title>
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #e0f2f1;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #191970; 
+        }
+		h2 {
+            color: #6A5ACD; 
+        }
+        h1 {
+            text-align: center;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            background: #f0f8ff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input, button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #5cb85c;
+            color: white;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+        .user-form-section {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>RUST - DuckDB - CRUD - Project</h1>
+
+        <div class="user-form-section">
+            <h2>INSERT USER</h2>
+            <input type="number" id="insert-id" placeholder="User ID" required />
+            <input type="text" id="insert-name" placeholder="Name" required />
+            <input type="email" id="insert-email" placeholder="Email" required />
+            <button onclick="insertUser()">Insert User</button>
+        </div>
+
+        <!-- Uncomment to enable the Update User section
+        <div class="user-form-section">
+            <h2>Update User</h2>
+            <input type="number" id="update-id" placeholder="User ID" required />
+            <input type="text" id="update-name" placeholder="New Name" />
+            <input type="email" id="update-email" placeholder="New Email" />
+            <button onclick="updateUser()">Update User</button>
+        </div>
+        -->
+
+		<div class="user-form-section">
+            <h2>GET USER</h2>
+            <input type="number" id="get-user-id" placeholder="User ID" required />
+            <button onclick="getUser()">Get User</button>
+        </div>
+		
+        <div class="user-form-section">
+            <h2>DELETE USER</h2>
+            <input type="number" id="delete-id" placeholder="User ID" required />
+            <button onclick="deleteUser()">Delete User</button>
+        </div>
+        
+    </div>
+    
+    <!-- Add your JavaScript code here -->
     <script>
         async function sendData(url = '', data = {}) {
             const response = await fetch(url, {
@@ -67,30 +156,5 @@
             });
         }
     </script>
-</head>
-<body>
-    <h1>DuckDB CRUD Operations</h1>
-
-    <h2>Insert User</h2>
-    <input type="number" id="insert-id" placeholder="User ID" required />
-    <input type="text" id="insert-name" placeholder="Name" required />
-    <input type="email" id="insert-email" placeholder="Email" required />
-    <button onclick="insertUser()">Insert User</button>
-    <!--
-    <h2>Update User</h2>
-    <input type="number" id="update-id" placeholder="User ID" required />
-    <input type="text" id="update-name" placeholder="New Name" />
-    <input type="email" id="update-email" placeholder="New Email" />
-    <button onclick="updateUser()">Update User</button>
-
-    -->
-
-    <h2>Delete User</h2>
-    <input type="number" id="delete-id" placeholder="User ID" required />
-    <button onclick="deleteUser()">Delete User</button>
-
-    <h2>Get User</h2>
-    <input type="number" id="get-user-id" placeholder="User ID" required />
-    <button onclick="getUser()">Get User</button>
 </body>
 </html>
